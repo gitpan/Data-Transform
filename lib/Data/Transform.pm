@@ -3,7 +3,7 @@ package Data::Transform;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.01_01';
+$VERSION = '0.02_01';
 
 use Carp qw(croak);
 use Scalar::Util qw(blessed);

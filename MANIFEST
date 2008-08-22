@@ -11,6 +11,7 @@ inc/Module/Install/WriteAll.pm
 lib/Data/Transform.pm
 lib/Data/Transform/Identity.pm
 lib/Data/Transform/Line.pm
+lib/Data/Transform/Meta.pm
 lib/Data/Transform/Reference.pm
 LICENSE
 Makefile.PL
