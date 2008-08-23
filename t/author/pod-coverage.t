@@ -1,4 +1,4 @@
-use Test::Pod::Coverage tests=>4;
+use Test::Pod::Coverage tests => 7;
 
 pod_coverage_ok( "Data::Transform", {
 		coverage_class => 'Pod::Coverage::CountParents',
@@ -17,5 +17,20 @@ pod_coverage_ok( "Data::Transform::Line", {
 pod_coverage_ok( "Data::Transform::Reference", {
 		coverage_class => 'Pod::Coverage::CountParents',
                 trustme => [qw(BUFFER DESERIALIZE SERIALIZE INPUT)],
+	});
+
+pod_coverage_ok( "Data::Transform::Grep", {
+		coverage_class => 'Pod::Coverage::CountParents',
+                trustme => [qw(BUFFER CODEGET CODEPUT)],
+	});
+
+pod_coverage_ok( "Data::Transform::Map", {
+		coverage_class => 'Pod::Coverage::CountParents',
+                trustme => [qw(BUFFER CODEGET CODEPUT)],
+	});
+
+pod_coverage_ok( "Data::Transform::Stackable", {
+		coverage_class => 'Pod::Coverage::CountParents',
+                trustme => [qw(FILTERS)],
 	});
 

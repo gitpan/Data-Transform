@@ -1,4 +1,5 @@
 package Data::Transform::Meta;
+use strict;
 
 sub new {
    my ($type, $data) = @_;
@@ -15,13 +16,16 @@ sub data {
    return $self->{data};
 }
 
-package Data::Transform::Meta::SENDBACK;
+package # hide from PAUSE
+        Data::Transform::Meta::SENDBACK;
 use base qw(Data::Transform::Meta);
 
-package Data::Transform::Meta::EOF;
+package # hide from PAUSE
+        Data::Transform::Meta::EOF;
 use base qw(Data::Transform::Meta);
 
-package Data::Transform::Meta::Error;
+package # hide from PAUSE
+        Data::Transform::Meta::Error;
 use base qw(Data::Transform::Meta);
 
 1;

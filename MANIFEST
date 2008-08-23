@@ -9,10 +9,13 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Data/Transform.pm
+lib/Data/Transform/Grep.pm
 lib/Data/Transform/Identity.pm
 lib/Data/Transform/Line.pm
+lib/Data/Transform/Map.pm
 lib/Data/Transform/Meta.pm
 lib/Data/Transform/Reference.pm
+lib/Data/Transform/Stackable.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
@@ -22,6 +25,9 @@ t/01-use.t
 t/02-identity.t
 t/03-line.t
 t/04-reference.t
+t/05-map.t
+t/06-grep.t
+t/50-stackable.t
 t/author/pod-coverage.t
 t/author/pod-syntax.t
 t/TestFilter.pm
