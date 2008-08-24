@@ -9,6 +9,7 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Data/Transform.pm
+lib/Data/Transform/Block.pm
 lib/Data/Transform/Grep.pm
 lib/Data/Transform/Identity.pm
 lib/Data/Transform/Line.pm
@@ -27,6 +28,7 @@ t/03-line.t
 t/04-reference.t
 t/05-map.t
 t/06-grep.t
+t/07-block.t
 t/50-stackable.t
 t/author/pod-coverage.t
 t/author/pod-syntax.t

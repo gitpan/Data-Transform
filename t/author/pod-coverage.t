@@ -1,4 +1,4 @@
-use Test::Pod::Coverage tests => 7;
+use Test::Pod::Coverage tests => 8;
 
 pod_coverage_ok( "Data::Transform", {
 		coverage_class => 'Pod::Coverage::CountParents',
@@ -32,5 +32,9 @@ pod_coverage_ok( "Data::Transform::Map", {
 pod_coverage_ok( "Data::Transform::Stackable", {
 		coverage_class => 'Pod::Coverage::CountParents',
                 trustme => [qw(FILTERS)],
+	});
+
+pod_coverage_ok( "Data::Transform::Identity", {
+		coverage_class => 'Pod::Coverage::CountParents',
 	});
 

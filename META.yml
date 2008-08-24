@@ -19,7 +19,10 @@ no_index:
 provides:
   Data::Transform:
     file: lib/Data/Transform.pm
-    version: 0.03_01
+    version: 0.04_01
+  Data::Transform::Block:
+    file: lib/Data/Transform/Block.pm
+    version: 0.01
   Data::Transform::Grep:
     file: lib/Data/Transform/Grep.pm
     version: 0.01
@@ -43,4 +46,4 @@ provides:
 requires:
   Carp: 0
   perl: 5.005
-version: 0.03_01
+version: 0.04_01

@@ -3,7 +3,7 @@ package Data::Transform;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.03_01';
+$VERSION = '0.04_01';
 
 use Carp qw(croak);
 use Scalar::Util qw(blessed);
@@ -93,7 +93,7 @@ sub get_one {
   }
   return [ ] unless (@{$self->[0]});
 
-  while (my $data = shift (@{$self->[0]})) {
+  while (defined (my $data = shift (@{$self->[0]}))) {
     if (blessed $data and $data->isa('Data::Transform::Meta')) {
       return [ $data ];
     }

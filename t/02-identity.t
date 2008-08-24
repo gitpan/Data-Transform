@@ -3,7 +3,7 @@ use strict;
 use lib qw(t/);
 
 use TestFilter;
-use Test::More tests => 17 + $COUNT_FILTER_INTERFACE + $COUNT_FILTER_STANDARD;
+use Test::More tests => 18 + $COUNT_FILTER_INTERFACE + $COUNT_FILTER_STANDARD;
 
 use_ok("Data::Transform::Identity");
 test_filter_interface("Data::Transform::Identity");
@@ -52,4 +52,7 @@ for (1 .. @test_fodder)
   is_deeply($received, [ ], "get_one() returned an empty array on empty buffer");
 }
 
+{ my $received = $filter->get([0]);
+  is_deeply($received, [ 0 ], "got false value");
+}
 exit;
