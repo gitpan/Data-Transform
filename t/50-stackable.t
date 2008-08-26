@@ -7,7 +7,7 @@ use lib qw(./mylib ../mylib);
 
 use Test::More;
 
-plan tests => 22;
+plan tests => 26;
 
 use_ok('Data::Transform::Stackable');
 use_ok('Data::Transform::Grep');
@@ -33,6 +33,20 @@ my $filter_stack = Data::Transform::Stackable->new(
 );
 
 ok(defined($filter_stack), "filter stack created");
+
+{
+  # testing Meta passthrough (copied from TestFilter)
+  my $eof = Data::Transform::Meta::EOF->new;
+  my $result;
+
+  $result = $filter_stack->get([$eof]);
+  cmp_ok(@$result, '>=', 1, 'got output for EOF from get');
+  isa_ok($result->[-1], 'Data::Transform::Meta::EOF', '.. and the last item');
+
+  $result = $filter_stack->put([$eof]);
+  cmp_ok(@$result, '>=', 1, 'got output for EOF from put');
+  isa_ok($result->[-1], 'Data::Transform::Meta::EOF', '.. and the last item');
+}
 
 my $block = $filter_stack->get( [ "test one (1)" ] );
 ok(!@$block, "partial get returned nothing");

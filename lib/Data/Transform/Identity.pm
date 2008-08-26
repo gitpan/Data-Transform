@@ -25,16 +25,16 @@ sub clone {
   return $clone;
 }
 
-sub _handle_data {
+sub _handle_get_data {
   my ($self, $data) = @_;
 
   return $data;
 }
 
-sub put {
-  my ($self, $chunks) = @_;
+sub _handle_put_data {
+  my ($self, $chunk) = @_;
 
-  return [ @$chunks ];
+  return $chunk;
 }
 
 

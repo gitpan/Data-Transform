@@ -221,7 +221,7 @@ sub get_pending {
 # get_one_start() is inherited from Data::Transform.
 # get_one()       is inherited from Data::Transform.
 
-sub _handle_data {
+sub _handle_get_data {
   my ($self, $data) = @_;
 
    if (defined $data) {
@@ -313,15 +313,10 @@ sub _handle_data {
 # supposed to contain one line per element, we also do a split and
 # join.  Bleah. ... why isn't the code doing what the comment says?
 
-sub put {
-  my ($self, $lines) = @_;
+sub _handle_put_data {
+  my ($self, $line) = @_;
 
-  my @raw;
-  foreach (@$lines) {
-    push @raw, $_ . $self->[OUTPUT_LITERAL];
-  }
-
-  \@raw;
+  return $line . $self->[OUTPUT_LITERAL];
 }
 
 

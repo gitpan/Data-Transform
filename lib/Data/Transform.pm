@@ -3,7 +3,7 @@ package Data::Transform;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.04_01';
+$VERSION = '0.05_01';
 
 use Carp qw(croak);
 use Scalar::Util qw(blessed);
@@ -88,16 +88,16 @@ is in use at any given time.
 sub get_one {
   my $self = shift;
 
-  if (my $val = $self->_handle_data) {
+  if (my $val = $self->_handle_get_data) {
     return [ $val ];
   }
   return [ ] unless (@{$self->[0]});
 
   while (defined (my $data = shift (@{$self->[0]}))) {
     if (blessed $data and $data->isa('Data::Transform::Meta')) {
-      return [ $data ];
+      return [ $self->_handle_get_meta($data) ];
     }
-    my $ret = $self->_handle_data($data);
+    my $ret = $self->_handle_get_data($data);
     if (defined $ret) {
       return [ $ret ];
     }
@@ -142,6 +142,24 @@ chunks.  The number of output chunks is not necessarily related to the
 number of input items.
 
 =cut
+
+sub put {
+  my ($self, $packets) = @_;
+  my @raw;
+
+  foreach my $packet (@$packets) {
+    if (blessed $packet and $packet->isa('Data::Transform::Meta')) {
+      if (my @ret = $self->_handle_put_meta($packet)) {
+        push @raw, @ret;
+      }
+      next;
+    } elsif (my @data = $self->_handle_put_data($packet)) {
+      push @raw, @data;
+    }
+  }
+
+  return \@raw;
+}
 
 =head2 meta
 
@@ -193,21 +211,114 @@ sub get_pending {
 
 =head1 IMPLEMENTORS NOTES
 
-L<Data::Transform> implements part of the public API above to help
-ensure uniform behaviour across all subclasses. Instead of overriding
-the high-level methods from the public API and duplicating code, you
-can implement the following methods, which are called by the
-generic implementation.
+L<Data::Transform> implements most of the public API above to help
+ensure uniform behaviour across all subclasses. This implementation
+expects your object to be an array ref. Data::Transform provides
+a default implementation for the following methods:
 
-=head2 _handle_data
+=over 2
+
+=item get(), get_one_start(), get_one()
+
+get() is implemented in terms of get_one_start() and get_one(). Since
+having to handle L<Data::Transform::Meta> packets means that you have
+to keep a list of incoming packets, it is highly unlikely that you
+will ever need to override get_one_start(), since all it does is add
+to the list. It assumes the list is kept as an array ref in the first
+entry of your object's list.
+
+get_one is in turn implemented in terms of the following two methods:
+
+=over 2
 
 =cut
 
-sub _handle_data {
-  my $self = shift;
+=item _handle_get_data(<data>)
 
-  croak ref($self) . " must implement _handle_data";
+This is where you do all your filter's input work. There is no default
+implementation. It has a single method parameter which may contain a single
+chunk of raw data to process. get_one() will also call it without new
+data to see if not all raw data from the previous chunk had been processed.
+
+=cut
+
+sub _handle_get_data {
+  croak ref($_[0]) . " must implement _handle_get_data";
 }
+
+=item _handle_get_meta(<Data::Transform::Meta>)
+
+Override this if you need to act on metadata packets that are embedded
+into the input stream. The default implementation just returns the
+packet. If you override this, make sure you return the packet as well, so
+that if your filter is being used in a filter stack, the filters below you
+get a chance to handle it as well.
+
+=back
+
+=cut
+
+sub _handle_get_meta {
+  return $_[1];
+}
+
+=item put()
+
+put() is implemented in terms of the following methods. It's unlikely
+you want to override put() instead of these:
+
+=over 2
+
+=cut
+
+=item  _handle_put_data(<data>) 
+
+Gets called for each packet of regular data in the list passed to put().
+
+=cut
+
+sub _handle_put_data {
+  croak ref($_[0]) . " must implement _handle_get_data";
+}
+
+=item _handle_put_meta(<Data::Transform::Meta>)
+
+Gets called for each packet of metadata in the list passed to put(). The
+default implementation just returns the packet. If you override this,
+make sure you end with returning it too, so that when your filter is
+used in a stack, the filters above you get a chance to handle it too.
+
+=cut
+
+sub _handle_put_meta {
+  return $_[1];
+}
+
+1;
+
+__END__
+
+=back
+
+=item get_pending()
+
+The default implementation just returns the list of raw packets still
+in your queue. If your filter doesn't always return one cooked packet
+for each raw packet it receives, you will have to override this to
+also return the data it has stored while assembing complete cooked
+packets.
+
+=item meta()
+
+This is just a flag method signifying that Data::Transform, unlike
+L<POE::Filter> supports handling metadata.
+
+=back
+
+So, in the best case, you only have to implement new(), clone(),
+_handle_get_data() and _handle_put_data(). Likely you will want
+to override get_pending() as well, but usually nothing more is
+needed.
 
 =head1 SEE ALSO
 
@@ -215,11 +326,6 @@ L<Data::Transform> is based on L<POE::Filter>
 L<POE::Wheel>
 The SEE ALSO section in L<POE> contains a table of contents covering
 the entire POE distribution.
-
-=head1 BUGS
-
-In theory, filters should be interchangeable.  In practice, stream and
-block protocols tend to be incompatible.
 
 =head1 LICENSE
 
@@ -231,6 +337,3 @@ See the file LICENCE for details.
 L<Data::Transform> is based on L<POE::Filter>, by Rocco Caputo. New
 code in Data::Transform is copyright 2008 by Martijn van Beers  <martijn@cpan.org>
 
-=cut
-
-1;

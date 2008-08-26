@@ -31,12 +31,23 @@ sub test_filter_interface {
 }
 
 # given a input, and the expected output run it through the filter in a few ways
-$COUNT_FILTER_STANDARD = 7;
+$COUNT_FILTER_STANDARD = 11;
 sub test_filter_standard {
   my ($filter, $in, $out, $put) = @_;
 
+  { # Test that Meta packets get passed on
+    my $eof = Data::Transform::Meta::EOF->new;
+    my $result;
+    $result = $filter->get([$eof]);
+    cmp_ok(@$result, '>=', 1, 'got output for EOF from get');
+    isa_ok($result->[-1], 'Data::Transform::Meta::EOF', '.. and the last item');
+    $result = $filter->put([$eof]);
+    cmp_ok(@$result, '>=', 1, 'got output for EOF from put');
+    isa_ok($result->[-1], 'Data::Transform::Meta::EOF', '.. and the last item');
+  }
   { # first using get()
     my $records = $filter->get($in);
+    #warn Dumper $in, $records, $out;
     is_deeply($records, $out, "get [standard test]");
   }
 

@@ -197,12 +197,11 @@ sub get_pending {
    return @ret ? \@ret : undef;
 }
 
-
 # get()           is inherited from Data::Transform.
 # get_one_start() is inherited from Data::Transform.
 # get_one()       is inherited from Data::Transform.
 
-sub _handle_data {
+sub _handle_get_data {
   my ($self, $data) = @_;
 
    $self->[FRAMING_BUFFER] .= $data
@@ -244,33 +243,25 @@ sub _handle_data {
   return;
 }
 
-sub put {
-  my ($self, $blocks) = @_;
-  my @raw;
+sub _handle_put_data {
+   my ($self, $block) = @_;
 
-  # Need to check lengths in octets, not characters.
-  BEGIN { eval { require bytes } and bytes->import; }
+   # Need to check lengths in octets, not characters.
+   BEGIN { eval { require bytes } and bytes->import; }
 
-  # If a block size is specified, then just assume the put is right.
-  # This will cause quiet framing errors on the receiving side.  Then
-  # again, we'll have quiet errors if the block sizes on both ends
-  # differ.  Ah, well!
+   # If a block size is specified, then just assume the put is right.
+   # This will cause quiet framing errors on the receiving side.  Then
+   # again, we'll have quiet errors if the block sizes on both ends
+   # differ.  Ah, well!
+   if (defined $self->[BLOCK_SIZE]) {
+      return $block;
+   } 
 
-  if (defined $self->[BLOCK_SIZE]) {
-    @raw = join '', @$blocks;
-  }
-
-  # No specified block size. Do the variable-length block thing. This
-  # steals a lot of Artur's code from the Reference filter.
-
-  else {
-    @raw = @$blocks;
-    foreach (@raw) {
-      $self->[ENCODER]->(\$_);
-    }
-  }
-
-  \@raw;
+   # No specified block size. Do the variable-length block
+   # thing. This steals a lot of Artur's code from the
+   # Reference filter.
+   $self->[ENCODER]->(\$block);
+   return $block;
 }
 
 1;

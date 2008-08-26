@@ -128,7 +128,7 @@ sub get_pending {
    return @ret ? \@ret : undef;
 }
 
-sub _handle_data {
+sub _handle_get_data {
   my ($self, $data) = @_;
 
   if (defined $data) {
@@ -150,18 +150,14 @@ sub _handle_data {
   return;
 }
 
-sub put {
-  my ($self, $references) = @_;
+sub _handle_put_data {
+  my ($self, $reference) = @_;
 
   # Need to check lengths in octets, not characters.
   use bytes;
 
-  my @raw = map {
-    my $frozen = $self->[SERIALIZE]->($_);
-    length($frozen) . "\0" . $frozen;
-  } @$references;
-
-  return \@raw;
+  my $frozen = $self->[SERIALIZE]->($reference);
+  return length($frozen) . "\0" . $frozen;
 }
 
 1;

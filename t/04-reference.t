@@ -10,7 +10,7 @@ use lib qw(t/);
 use TestFilter;
 use Test::More;
 
-plan tests => 9 + $COUNT_FILTER_INTERFACE;
+plan tests => 9 + $COUNT_FILTER_INTERFACE + $COUNT_FILTER_STANDARD;
 
 use_ok('Data::Transform::Reference');
 
@@ -60,6 +60,17 @@ $filter = Data::Transform::Reference->new(serialize => \&freeze, deserialize => 
 
 isa_ok($filter, 'Data::Transform::Reference');
 
+my $data = "test";
+my $ref = \$data;
+my $frozen = &freeze($ref);
+{ use bytes;
+        $frozen = length($frozen) . "\0" . $frozen;
+}
+test_filter_standard($filter,
+        [$frozen],
+        [$ref],
+        [$frozen],
+);
 # Run some tests under a certain set of conditions.
 sub test_freeze_and_thaw {
   my ($filter) = @_;
@@ -74,7 +85,7 @@ sub test_freeze_and_thaw {
   is_deeply(
     $got,
     [ $scalar_ref, $object_ref ],
-    "$filter successfully froze and thawed"
+    "filter successfully froze and thawed"
   );
 }
 
@@ -84,7 +95,7 @@ test_freeze_and_thaw($filter);
 # Test get_pending.
 
 #my $pending_filter = Data::Transform::Reference->new();
-use Storable;
+use Storable qw();
 $filter = Data::Transform::Reference->new(serialize => Storable->can('nfreeze'), deserialize => Storable->can('thaw'));
 is($filter->get_pending(), undef, 'nothing left in filter after previous tests');
 

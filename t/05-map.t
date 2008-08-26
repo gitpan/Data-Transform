@@ -4,7 +4,7 @@ use lib qw(t/);
 use TestFilter;
 use Test::More;
 
-plan tests => 19 + $COUNT_FILTER_INTERFACE;
+plan tests => 17 + $COUNT_FILTER_INTERFACE + $COUNT_FILTER_STANDARD;
 
 use_ok('Data::Transform::Map');
 test_filter_interface('Data::Transform::Map');
@@ -29,8 +29,12 @@ sub test_new {
 my $filter;
 # Test actual mapping of Get, Put, and Code
 $filter = Data::Transform::Map->new( Get => sub {uc($_[0])}, Put => sub {lc($_[0])});
-is_deeply($filter->put([qw/A B C/]), [qw/a b c/], "Test Put");
-is_deeply($filter->get([qw/a b c/]), [qw/A B C/], "Test Get");
+
+test_filter_standard($filter,
+        [qw/a b c/],
+        [qw/A B C/],
+        [qw/a b c/],
+);
 
 $filter = Data::Transform::Map->new(Code => sub { uc($_[0]) });
 is_deeply($filter->put([qw/a b c/]), [qw/A B C/], "Test Put (as Code)");

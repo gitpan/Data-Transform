@@ -105,17 +105,11 @@ sub clone {
    return bless $new, ref $self;
 }
 
-sub get_pending {
-   my $self = shift;
-   return undef unless @{$self->[BUFFER]};
-   [ @{$self->[BUFFER]} ];
-}
-
 # get()           is inherited from Data::Transform.
 # get_one_start() is inherited from Data::Transform.
 # get_one()       is inherited from Data::Transform.
 
-sub _handle_data {
+sub _handle_get_data {
    my ($self, $data) = @_;
 
 # Must be a loop so that the buffer will be altered as items are
@@ -125,9 +119,10 @@ sub _handle_data {
    return;
 }
 
-sub put {
+sub _handle_put_data {
    my ($self, $data) = @_;
-   [ grep { $self->[CODEPUT]->($_) } @$data ];
+   return $data if $self->[CODEPUT]->($data);
+   return;
 }
 
 =head2 modify

@@ -5,11 +5,17 @@ use lib qw(t/);
 use TestFilter;
 use Test::More;
 
-plan tests => 20 + $COUNT_FILTER_INTERFACE;
+plan tests => 20 + $COUNT_FILTER_INTERFACE + $COUNT_FILTER_STANDARD;
 
 use_ok("Data::Transform::Block");
 test_filter_interface("Data::Transform::Block");
 
+  my $filter = new Data::Transform::Block( BlockSize => 4 );
+test_filter_standard($filter,
+        ['12345678'],
+        ['1234', '5678'],
+        ['1234', '5678'],
+);
 # Test block filter in fixed-length mode.
 {
   my $filter = new Data::Transform::Block( BlockSize => 4 );
@@ -19,7 +25,7 @@ test_filter_interface("Data::Transform::Block");
   is_deeply($cooked, [ "1234", "5678" ], "get() parses blocks");
 
   my $reraw = $filter->put( $cooked );
-  is_deeply($reraw, [ "12345678" ], "put() serializes blocks");
+  is_deeply($reraw, [ "1234", "5678" ], "put() serializes blocks");
 }
 
 # Test block filter with get_one() functions.

@@ -21,8 +21,9 @@ test_filter_standard(
 );
 
 # Specific tests for stream filter
+
 { my $received = $filter->get( \@test_fodder );
-  is_deeply($received, \@test_fodder, "received combined test items");
+  is_deeply($received, \@test_fodder, "received each item discretely");
 }
 
 { my $sent = $filter->put( \@test_fodder );
