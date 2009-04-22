@@ -3,7 +3,7 @@ package Data::Transform;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.05_01';
+$VERSION = '0.06';
 
 use Carp qw(croak);
 use Scalar::Util qw(blessed);
@@ -278,7 +278,7 @@ Gets called for each packet of regular data in the list passed to put().
 =cut
 
 sub _handle_put_data {
-  croak ref($_[0]) . " must implement _handle_get_data";
+  croak ref($_[0]) . " must implement _handle_put_data";
 }
 
 =item _handle_put_meta(<Data::Transform::Meta>)

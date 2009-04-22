@@ -6,7 +6,7 @@ build_requires:
   Storable: 0
   Test::More: 0
 distribution_type: module
-generated_by: 'Module::Install version 0.77'
+generated_by: 'Module::Install version 0.79'
 license: gpl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -19,7 +19,7 @@ no_index:
 provides:
   Data::Transform:
     file: lib/Data/Transform.pm
-    version: 0.05_01
+    version: 0.06
   Data::Transform::Block:
     file: lib/Data/Transform/Block.pm
     version: 0.01
@@ -46,4 +46,6 @@ provides:
 requires:
   Carp: 0
   perl: 5.005
-version: 0.05_01
+resources:
+  repository: git://martijn.at/data-transform.git
+version: 0.06

@@ -15,6 +15,7 @@ lib/Data/Transform/Identity.pm
 lib/Data/Transform/Line.pm
 lib/Data/Transform/Map.pm
 lib/Data/Transform/Meta.pm
+lib/Data/Transform/POE.pm
 lib/Data/Transform/Reference.pm
 lib/Data/Transform/Stackable.pm
 LICENSE

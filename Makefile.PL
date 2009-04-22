@@ -12,5 +12,6 @@ test_requires   'Storable'      => '0';
 author_tests('t/author');
 
 auto_provides;
+repository 'git://martijn.at/data-transform.git';
 
 WriteAll;
